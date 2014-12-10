@@ -1,0 +1,10 @@
+{
+  "curly": false,
+  "globalstrict": true,
+  "node": true,
+  "eqnull": true,
+  "esnext": true,
+  "undef": {
+    "Promise" : true
+  }
+}

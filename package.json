@@ -1,0 +1,29 @@
+{
+  "name": "jaffamvc-koa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/.bin/mocha -r should --compilers coffee:coffee-script/register"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "^0.11.12"
+  },
+  "dependencies": {
+    "bluebird": "^2.3.11",
+    "debug": "^2.1.0",
+    "end-of-stream": "^1.1.0",
+    "koa": "^0.13.0",
+    "koa-compose": "^2.3.0",
+    "koa-mount": "^1.3.0",
+    "methods": "^1.1.0",
+    "path-to-regexp": "^1.0.1"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "mocha": "^2.0.1",
+    "should": "^4.3.1"
+  }
+}
