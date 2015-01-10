@@ -23,6 +23,7 @@ module.exports = function *() {
     yield *next;
     this.body += JSON.stringify(this.params);
     yield *next;
+    console.log(this.links)
     //yield next;
   });
 
