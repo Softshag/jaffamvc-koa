@@ -1,10 +1,12 @@
 
-
+var profiler = require('../lib/middlewares/profiler');
 var jaffamvc, app;
 
 jaffamvc = require('../lib');
 
 app = jaffamvc();
+
+app.use(profiler());
 
 
 app.default().start().then(function () {
