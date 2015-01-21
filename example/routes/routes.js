@@ -33,7 +33,8 @@ module.exports = function *() {
 
   this.resources('/api/home',{
     controller: 'home',
-    model: 'events'
+    model: 'events',
+    except: ['create', 'update']
   });
 
   this.namespace('/ns', function () {

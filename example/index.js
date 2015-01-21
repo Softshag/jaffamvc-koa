@@ -10,6 +10,7 @@ app.use(profiler());
 
 
 app.default().start().then(function () {
+  console.log('started')
   this.listen(3000);
 }).catch(function (err) {
   console.log(err.stack);
