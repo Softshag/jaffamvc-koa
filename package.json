@@ -1,6 +1,6 @@
 {
   "name": "jaffamvc-koa",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "bluebird": "^2.3.11",
     "co": "^4.0.2",
     "debug": "^2.1.0",
+    "depd": "^1.0.0",
     "end-of-stream": "^1.1.0",
     "koa": "^0.13.0",
     "koa-compose": "^2.3.0",
