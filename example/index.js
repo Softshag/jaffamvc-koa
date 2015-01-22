@@ -9,7 +9,7 @@ app = jaffamvc();
 app.use(profiler());
 
 
-app.default().start().then(function () {
+app.start().then(function () {
   console.log('started')
   this.listen(3000);
 }).catch(function (err) {
