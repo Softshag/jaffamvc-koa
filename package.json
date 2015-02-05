@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/mocha -r should --compilers coffee:coffee-script/register"
+    "test": "node --harmony ./node_modules/.bin/mocha -r should --compilers coffee:coffee-script/register"
   },
   "author": "Rasmus Kildevæld",
   "license": "ISC",
