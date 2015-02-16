@@ -14,7 +14,6 @@ app.phase('some', function () {
 
 });
 
-app.phase('rpc',rpc);
 
 app.use(profiler());
 app.use(logger());
