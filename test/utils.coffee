@@ -10,14 +10,14 @@ describe 'Utils', ->
       file = utils.resolveExt p
 
       (file != null).should.be.true
-      file.should.equal(p + '.js')
+      file.should.equal(p + '.js', 'has js suffix')
 
     it 'should resolve any file', ->
       p = path.join __dirname, 'utils'
       file = utils.resolveExt p, ['coffee','js']
 
       (file != null).should.be.true
-      file.should.equal(p + '.coffee')
+      file.should.equal(p + '.coffee', 'has coffee suffix')
 
 
   describe 'resolveFile', ->
