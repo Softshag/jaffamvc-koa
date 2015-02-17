@@ -14,7 +14,7 @@ describe 'Utils', ->
 
     it 'should resolve any file', ->
       p = path.join __dirname, 'utils'
-      file = utils.resolveExt p, ['coffee','js']
+      file = utils.resolveExt p, ['.coffee','.js']
 
       (file != null).should.be.true
       file.should.equal(p + '.coffee', 'has coffee suffix')
