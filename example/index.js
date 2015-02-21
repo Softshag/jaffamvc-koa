@@ -4,9 +4,9 @@ var logger = require('../lib/middlewares/logger.js');
 var rpc = require('../modules/rpc');
 var jaffamvc, app;
 
-jaffamvc = require('../lib');
+Jaffamvc = require('../index');
 
-app = jaffamvc();
+app = new Jaffamvc();
 
 
 app.phase('some', function () {
@@ -23,7 +23,7 @@ app.on('run', function (task) {
 })
 
 app.start().then(function () {
-  console.log('started')
+  console.log('Application listening on port 3000')
   this.listen(3000);
 }).catch(function (err) {
   console.log(err.stack);

@@ -1,21 +1,22 @@
 
-"use strict";
+'use strict';
 
-var EventEmitter = require("events").EventEmitter,
-    util = require("util"),
-    assign = require("object-assign");
+var EventEmitter = require('events').EventEmitter,
+    util = require('util'),
+    assign = require('object-assign');
 
 
 var __slice = Array.prototype.slice;
 
 module.exports = (function (__super) {
+
   util.inherits(Mediator, __super);
 
   /**
    * Mediator
    * @constructor Mediator
    */
-  function Mediator(name) {
+  function Mediator (name) {
     this.name = name;
     __super.call(this);
   }
@@ -39,9 +40,10 @@ module.exports = (function (__super) {
         fn: fn,
         ctx: ctx || this
       };
+
     },
     complyTo: function (req) {
-      return this._reqs.hasOwnProperty(req);
+        return this._reqs.hasOwnProperty(req);
     },
     /**
      * Execute Commands
@@ -52,9 +54,9 @@ module.exports = (function (__super) {
 
       if (this._cmds.hasOwnProperty(cmd)) {
         var c = this._cmds[cmd];
-        c.fn.apply(c.ctx, __slice.call(arguments, 1));
+        c.fn.apply(c.ctx, __slice.call(arguments,1));
       } else {
-        throw new Error("Handler not set for command: " + cmd);
+        throw new Error('Handler not set for command: ' + cmd)
       }
     },
     /**
@@ -87,9 +89,10 @@ module.exports = (function (__super) {
         fn: fn,
         ctx: ctx || this
       };
+
     },
     replyTo: function (req) {
-      return this._reqs.hasOwnProperty(req);
+        return this._reqs.hasOwnProperty(req);
     },
     /**
      * Request
@@ -102,7 +105,7 @@ module.exports = (function (__super) {
         var r = this._reqs[req];
         return r.fn.apply(r.ctx, __slice.call(arguments, 1));
       } else {
-        throw new Error("Handler not set for request: " + req);
+          throw new Error('Handler not set for request: ' + req)
       }
     },
     /**
@@ -119,21 +122,15 @@ module.exports = (function (__super) {
   };
 
 
-  function _execute(handler, args) {
-    if (!handler) {
-      return null;
-    }var len = args.length;
+  function _execute (handler, args) {
+    if (!handler) return null;
+    var len = args.length;
     switch (len) {
-      case 0:
-        return handler.fn.call(handler.ctx);
-      case 1:
-        return handler.fn.call(handler.ctx, args[0]);
-      case 2:
-        return handler.fn.call(handler.ctx, args[0], args[1]);
-      case 3:
-        return handler.fn.call(handler.ctx, args[0], args[1], args[2]);
-      default:
-        return handler.fn.apply(handler.ctx, args);
+      case 0: return handler.fn.call(handler.ctx);
+      case 1: return handler.fn.call(handler.ctx, args[0]);
+      case 2: return handler.fn.call(handler.ctx, args[0], args[1]);
+      case 3: return handler.fn.call(handler.ctx, args[0], args[1], args[2]);
+      default: return handler.fn.apply(handler.ctx, args);
     }
   }
 
@@ -143,4 +140,5 @@ module.exports = (function (__super) {
   assign(Mediator.prototype, Commands, Requests);
 
   return Mediator;
+
 })(EventEmitter);

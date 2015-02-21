@@ -1,12 +1,10 @@
-"use strict";
-
 /**
 * Dependencies
 */
 
-var compose = require("koa-compose"),
-    debug = require("debug")("koa-router"),
-    pathToRegexp = require("path-to-regexp");
+var compose = require('koa-compose')
+, debug = require('debug')('koa-router')
+, pathToRegexp = require('path-to-regexp');
 
 /**
 * Expose `Route`.
@@ -30,7 +28,7 @@ function Route(path, methods, middleware, name, opts) {
   this.name = name || null;
 
   this.methods = [];
-  methods.forEach(function (method) {
+  methods.forEach(function(method) {
     this.methods.push(method.toUpperCase());
   }, this);
 
@@ -44,28 +42,33 @@ function Route(path, methods, middleware, name, opts) {
   if (path instanceof RegExp) {
     this.path = path.source;
     this.regexp = path;
-  } else {
+  }
+  else {
     this.path = path;
     this.regexp = pathToRegexp(path, this.params, opts);
   }
 
   // ensure middleware is a function
-  middleware.forEach(function (fn) {
-    var type = typeof fn;
-    if (type != "function") {
-      throw new Error(methods.toString() + " `" + (name || path) + "`: `middleware` " + "must be a function, not `" + type + "`");
+  middleware.forEach(function(fn) {
+    var type = (typeof fn);
+    if (type != 'function') {
+      throw new Error(
+        methods.toString() + " `" + (name || path) +"`: `middleware` "
+        + "must be a function, not `" + type + "`"
+      );
     }
   });
 
   if (middleware.length > 1) {
     this.middleware = compose(middleware);
-  } else {
+  }
+  else {
     this.middleware = middleware[0];
   }
 
   this.fns.middleware = middleware;
 
-  debug("defined route %s %s", this.methods, this.path);
+  debug('defined route %s %s', this.methods, this.path);
 };
 
 /**
@@ -83,7 +86,7 @@ var route = Route.prototype;
 * @api private
 */
 
-route.match = function (path) {
+route.match = function(path) {
   if (this.regexp.test(path)) {
     var params = [];
     var captures = [];
@@ -97,14 +100,15 @@ route.match = function (path) {
     if (this.params.length) {
       // If route has parameterized capture groups,
       // use parameter names for properties
-      for (var len = captures.length, i = 0; i < len; i++) {
+      for (var len = captures.length, i=0; i<len; i++) {
         if (this.params[i]) {
           var c = captures[i];
           params[this.params[i].name] = c ? safeDecodeURIComponent(c) : c;
         }
       }
-    } else {
-      for (var i = 0, len = captures.length; i < len; i++) {
+    }
+    else {
+      for (var i=0, len=captures.length; i<len; i++) {
         var c = captures[i];
         params[i] = c ? safeDecodeURIComponent(c) : c;
       }
@@ -131,26 +135,27 @@ route.match = function (path) {
 * @api private
 */
 
-route.url = function (params) {
+route.url = function(params) {
   var args = params;
   var url = this.path;
 
   // argument is of form { key: val }
-  if (typeof params != "object") {
+  if (typeof params != 'object') {
     args = Array.prototype.slice.call(arguments);
   }
 
   if (args instanceof Array) {
-    for (var len = args.length, i = 0; i < len; i++) {
+    for (var len = args.length, i=0; i<len; i++) {
       url = url.replace(/:[^\/]+/, args[i]);
     }
-  } else {
+  }
+  else {
     for (var key in args) {
-      url = url.replace(":" + key, args[key]);
+      url = url.replace(':' + key, args[key]);
     }
   }
 
-  url.split("/").forEach(function (component) {
+  url.split('/').forEach(function(component) {
     url = url.replace(component, encodeURIComponent(component));
   });
 
@@ -177,14 +182,14 @@ route.url = function (params) {
 * @api public
 */
 
-route.param = function (param, fn) {
+route.param = function(param, fn) {
   var middleware = [];
 
-  this.fns.params[param] = function* (next) {
-    yield* fn.call(this, this.params[param], next);
+  this.fns.params[param] = function *(next) {
+    yield *fn.call(this, this.params[param], next);
   };
 
-  this.params.forEach(function (param) {
+  this.params.forEach(function(param) {
     var fn = this.fns.params[param.name];
     if (fn) {
       middleware.push(fn);

@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 /**
  * Dependencies
  */
 
-var debug = require("debug")("koa-router"),
-    methods = require("methods"),
-    Route = require("./route"),
-    compose = require("koa-compose"),
-    mount = require("koa-mount"),
-    utils = require("../utils"),
-    util = require("util"),
-    EventEmitter = require("events").EventEmitter;
+var debug = require('debug')('koa-router'),
+  methods = require('methods'),
+  Route = require('./route'),
+  compose = require('koa-compose'),
+  mount = require('koa-mount'),
+  utils = require('../utils'),
+  util = require('util'),
+  EventEmitter = require('events').EventEmitter;
 
 /**
  * Expose `Router`
@@ -18,7 +18,7 @@ var debug = require("debug")("koa-router"),
 
 module.exports = Router;
 
-util.inherits(Router, EventEmitter);
+util.inherits(Router, EventEmitter)
 /**
  * Initialize Router.
  *
@@ -30,6 +30,7 @@ util.inherits(Router, EventEmitter);
  */
 
 function Router(app, opts) {
+
   if (!(this instanceof Router)) {
     var router = new Router(app, opts);
     return router.middleware();
@@ -45,7 +46,7 @@ function Router(app, opts) {
   this.app = app;
 
   this.opts = opts || {};
-  this.methods = ["OPTIONS"];
+  this.methods = ['OPTIONS'];
   this.routes = [];
   this.params = {};
 
@@ -67,10 +68,10 @@ var router = Router.prototype;
  * @return {Function}
  * @api public
  */
-router.middleware = function () {
+router.middleware = function() {
   var router = this;
 
-  return function* (next) {
+  return function*(next) {
     var routes = router.routes,
         i = routes.length;
 
@@ -79,7 +80,7 @@ router.middleware = function () {
     }
 
 
-    var prev = next || function* (err) {};
+    var prev = next || function*(err) { };
     var route;
     while (i--) {
       route = routes[i];
@@ -87,7 +88,7 @@ router.middleware = function () {
         var pathname = router.opts.routerPath || this.routerPath || this.path;
         var params = route.match(pathname);
         if (params && ~route.methods.indexOf(this.method)) {
-          debug("%s %s", this.method, pathname);
+          debug('%s %s', this.method, pathname);
           this.route = route;
           merge(this.params, params);
           prev = route.middleware.call(this, prev);
@@ -95,9 +96,10 @@ router.middleware = function () {
       } else {
         prev = route.call(this, prev);
       }
+
     }
 
-    yield* prev;
+    yield *prev;
   };
 };
 
@@ -106,10 +108,10 @@ router.middleware = function () {
  * as `router.get()` or `router.post()`.
  */
 
-methods.forEach(function (method) {
-  router[method] = function (name, path, middleware) {
+methods.forEach(function(method) {
+  router[method] = function(name, path, middleware) {
     var args = Array.prototype.slice.call(arguments);
-    if (typeof path === "string" || path instanceof RegExp) {
+    if ((typeof path === 'string') || (path instanceof RegExp)) {
       args.splice(2, 0, [method]);
     } else {
       args.splice(1, 0, [method]);
@@ -120,7 +122,7 @@ methods.forEach(function (method) {
 });
 
 // Alias for `router.delete()` because delete is a reserved word
-router.del = router["delete"];
+router.del = router['delete'];
 
 /**
  * Register route with all methods.
@@ -132,9 +134,9 @@ router.del = router["delete"];
  * @api public
  */
 
-router.all = function (name, path, middleware) {
+router.all = function(name, path, middleware) {
   var args = Array.prototype.slice.call(arguments);
-  args.splice(typeof path == "function" ? 1 : 2, 0, methods);
+  args.splice(typeof path == 'function' ? 1 : 2, 0, methods);
 
   this.register.apply(this, args);
   return this;
@@ -150,18 +152,18 @@ router.all = function (name, path, middleware) {
  * @api public
  */
 
-router.redirect = function (source, destination, code) {
+router.redirect = function(source, destination, code) {
   // lookup source route by name
-  if (source instanceof RegExp || source[0] != "/") {
+  if (source instanceof RegExp || source[0] != '/') {
     source = this.url(source);
   }
 
   // lookup destination route by name
-  if (destination instanceof RegExp || destination[0] != "/") {
+  if (destination instanceof RegExp || destination[0] != '/') {
     destination = this.url(destination);
   }
 
-  return this.all(source, function* () {
+  return this.all(source, function*() {
     this.redirect(destination);
     this.status = code || 301;
   });
@@ -177,7 +179,7 @@ router.redirect = function (source, destination, code) {
  * @return {Route}
  * @api public
  */
-router.register = function (name, path, methods, middleware) {
+router.register = function(name, path, methods, middleware) {
   if (path instanceof Array) {
     middleware = Array.prototype.slice.call(arguments, 2);
     methods = path;
@@ -191,7 +193,7 @@ router.register = function (name, path, methods, middleware) {
   var route = new Route(path, methods, middleware, name, this.opts);
 
   // add parameter middleware
-  Object.keys(this.params).forEach(function (param) {
+  Object.keys(this.params).forEach(function(param) {
     route.param(param, this.params[param]);
   }, this);
 
@@ -199,8 +201,8 @@ router.register = function (name, path, methods, middleware) {
   // DEBUG: this.routes.push(route);
 
   // register route methods with router (for 501 responses)
-  route.methods.forEach(function (method) {
-    if (! ~this.methods.indexOf(method)) {
+  route.methods.forEach(function(method) {
+    if (!~this.methods.indexOf(method)) {
       this.methods.push(method);
     }
   }, this);
@@ -208,12 +210,13 @@ router.register = function (name, path, methods, middleware) {
   var router = this;
   router._cache = router._cache || {};
 
-  this.emit("route:register", {
+  this.emit('route:register', {
     router: this,
     route: route
   });
 
-  var fn = function* (next) {
+  var fn = function*(next) {
+
     if (!(this.params instanceof Array)) {
       this.params = [];
     }
@@ -221,12 +224,12 @@ router.register = function (name, path, methods, middleware) {
     var pathname = router.opts.routerPath || this.routerPath || this.path;
     var params = route.match(pathname);
     if (params && ~route.methods.indexOf(this.method)) {
-      debug("%s %s", this.method, pathname);
+      debug('%s %s', this.method, pathname);
       this.route = route;
       merge(this.params, params);
-      yield* route.middleware.call(this, next);
+      yield *route.middleware.call(this, next);
     } else {
-      yield* next;
+      yield *next;
     }
   };
 
@@ -237,46 +240,48 @@ router.register = function (name, path, methods, middleware) {
 };
 
 router.unregister = function (path, methods) {
-  if (methods && !Array.isArray(methods)) methods = [methods];
+  if (methods && !Array.isArray(methods))
+    methods = [methods];
 
-  var routes = this.routes,
-      route,
-      i;
+  var routes = this.routes, route,i;
 
-  for (i = 0; i < routes.length; i++) {
+  for (i = 0; i < routes.length; i++ ) {
     route = routes[i];
-    if (route.path !== path) continue;
+    if ( route.path !== path)
+      continue;
 
     if (methods) {
-      for (var x = 0; x < methods.length; x++) {
+      for (var x=0;x<methods.length;x++) {
         var met = methods[x];
         var index = route.methods.indexOf(met);
         if (index > -1) {
-          route.methods.splice(index, 1);
+          route.methods.splice(index,1);
         }
       }
     } else {
       var index = this._routes.indexOf(route);
-      this.emit("route:unregister", {
+      this.emit('route:unregister', {
         router: this,
-        route: route });
+        route: route,
+      });
 
-      this._routes = this._routes.splice(index, 1);
+      this._routes = this._routes.splice(index,1);
     }
   }
+
 };
 
 router.unregisterAll = function () {
   this.routes.forEach(function (route) {
-    this.emit("route:unregister", {
+    this.emit('route:unregister', {
       router: this,
       route: route
     });
   }, this);
-};
+}
 
 
-router.use = function (middleware) {
+router.use = function(middleware) {
   if (arguments.length > 1) {
     middleware = Array.prototype.slice.call(arguments, 0);
   }
@@ -287,6 +292,7 @@ router.use = function (middleware) {
 
   this.routes.push(middleware);
 
+
 };
 /**
  * Lookup route with given `name`.
@@ -296,7 +302,7 @@ router.use = function (middleware) {
  * @api public
  */
 
-router.route = function (name) {
+router.route = function(name) {
   for (var len = this.routes.length, i = 0; i < len; i++) {
     if (this.routes[i].name == name) {
       return this.routes[i];
@@ -315,7 +321,7 @@ router.route = function (name) {
  * @api public
  */
 
-router.url = function (name, params) {
+router.url = function(name, params) {
   var route = this.route(name);
 
   if (route) {
@@ -327,9 +333,9 @@ router.url = function (name, params) {
 };
 
 
-router.param = function (param, fn) {
+router.param = function(param, fn) {
   this.params[param] = fn;
-  this.routes.forEach(function (route) {
+  this.routes.forEach(function(route) {
     route.param(param, fn);
   });
   return this;
@@ -343,18 +349,20 @@ router.param = function (param, fn) {
  * @api private
  */
 
-router.extendApp = function (app) {
+router.extendApp = function(app) {
   var router = this;
 
   app.url = router.url.bind(router);
   app.router = router;
 
-  ["all", "redirect", "register", "del", "param"].concat(methods).forEach(function (method) {
-    app[method] = function () {
-      router[method].apply(router, arguments);
-      return this;
-    };
-  });
+  ['all', 'redirect', 'register', 'del', 'param']
+  .concat(methods)
+    .forEach(function(method) {
+      app[method] = function() {
+        router[method].apply(router, arguments);
+        return this;
+      };
+    });
 
   return app;
 };
@@ -369,8 +377,7 @@ router.extendApp = function (app) {
  */
 
 function merge(a, b) {
-  if (!b) {
-    return a;
-  }for (var k in b) a[k] = b[k];
+  if (!b) return a;
+  for (var k in b) a[k] = b[k];
   return a;
 }
