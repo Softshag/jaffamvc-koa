@@ -13,5 +13,9 @@ assign(context, {
     return this.response.set('Link', link + Object.keys(links).map(function(rel){
       return '<' + links[rel] + '>; rel="' + rel + '"';
     }).join(', '));
+  },
+  get xhr() {
+    let xhr = this.get('X-Requested-With');
+    return xhr === 'XMLHttpRequest';
   }
 });
