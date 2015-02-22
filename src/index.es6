@@ -65,7 +65,7 @@ export default class JaffaMVC extends Koa {
     }
 
     super.use(middleware);
-    //Koa.prototype.use.call(this, middleware);
+    
     return this;
   }
   /**
@@ -86,15 +86,17 @@ export default class JaffaMVC extends Koa {
       yield this.boot();
 
       this.__initialized = true;
+
       this.use(this.router.middleware());
+
       this.emit('start');
 
       if (port) {
         this.listen(port);
       }
 
-
       return this;
+
     }.bind(this));
 
   }
@@ -116,11 +118,9 @@ JaffaMVC.defaults = {
   initializers: './initializers'
 };
 
-JaffaMVC.Promise = require('native-or-bluebird');
 JaffaMVC.Router = Router;
 JaffaMVC.Mediator = Mediator;
 JaffaMVC.utils = utils;
-JaffaMVC.co = require('co');
 
 assign(JaffaMVC.prototype, bootable);
 

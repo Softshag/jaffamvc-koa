@@ -1,16 +1,16 @@
 'use strict';
 
 import eos from 'end-of-stream';
-//import util from 'util';
-import Promise from 'bluebird';
 import dbg from 'debug';
-import Utils from './utils';
+import co from 'co';
+import * as utils from './utils';
+import Promise from 'native-or-bluebird';
 
 let debug = dbg('mvc:boot');
 
-function noop () {}
+let noop = function *() {};
 
-class Task {
+export class Task {
   constructor(options) {
     super();
     this.options = options;
@@ -24,10 +24,14 @@ class Task {
         resolve();
       };
 
-      const {fn,context} = this.options;
+      let {fn,context} = this.options;
 
+      // Node style callback
       if (fn.length === 1) {
         return fn.call(context, done);
+      // Generator
+      } else if (utils.isGenerator(fn) || utils.isGeneratorFunction(fn)) {
+        fn = co.wrap(fn);
       }
 
       const ret = fn.call(context);
@@ -45,7 +49,7 @@ class Task {
   }
 }
 
-module.exports = {
+export default {
   /**
    * Run phases
    * @return {Promise}
@@ -56,20 +60,21 @@ module.exports = {
     let phases = this._phases;
 
     emit('before:boot');
+    let len = phases.length;
 
-    let p = Utils.eachAsync(phases, (task, next) => {
-      emit('before:run', task);
-      debug('run phase: %s',task.options.name || "unnamed");
+    return co(function *() {
+      let task;
 
-      task.run().then(() => {
-        next();
-      } , next);
+      for (var i=0;i<len;i++) {
+        task = phases[i];
+        emit('before:run',task);
+        yield task.run();
+        emit('run', task);
+      }
 
-    });
-    // Return a bluebird promise.
-    return Promise.resolve(p).then(function () {
       emit('boot');
-    });
+    }.bind(this));
+
   },
   /**
    * Add new phase the the runner
@@ -87,7 +92,7 @@ module.exports = {
     }
 
     if (typeof fn !== 'function') {
-      throw new Error('fn not a function or is not a function');
+      throw new Error('fn not a function');
     }
 
     debug('adding phase: %s', name || 'unnamed');
@@ -95,7 +100,7 @@ module.exports = {
     var t = new Task({
       name: name,
       fn: fn,
-      context: context ||  this
+      context: context || this
     });
 
     this._phases.push(t);

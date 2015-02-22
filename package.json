@@ -13,7 +13,6 @@
     "iojs": "^1.0.0"
   },
   "dependencies": {
-    "bluebird": "^2.9.12",
     "co": "^4.4.0",
     "debug": "^2.1.1",
     "end-of-stream": "^1.1.0",

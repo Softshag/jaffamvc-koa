@@ -1,11 +1,10 @@
-
-var Promise = require('bluebird');
+'use strict';
+let utils = require('../../lib/utils');
 
 module.exports = function () {
 
-  return Promise.delay(1).then(function () {
-    console.log('tjopper');
-
-
+  return utils.delay(1000).then(function () {
+    console.log('rapraparp');
+    return utils.delay(500);
   });
 };

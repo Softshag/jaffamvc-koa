@@ -8,7 +8,7 @@ import assign from 'object-assign';
 import mount from 'koa-mount';
 import methods from 'methods';
 import DispatchError from './errors/dispatch-error';
-import utils from './utils';
+import * as utils from './utils';
 import Path from 'path';
 
 

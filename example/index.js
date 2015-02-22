@@ -7,18 +7,22 @@ Jaffamvc = require('../index');
 
 app = new Jaffamvc();
 
+console.log(Jaffamvc)
 
-app.phase('some', function () {
-  console.log('some phase');
-
+app.phase('some', function (done) {
+  console.log('some phase', this === app)
+  setTimeout(done, 1000)
 });
 
+app.phase('other', function *() {
+  console.log('some other phase', this === app)
+});
 
 app.use(profiler());
 app.use(logger());
 
-app.on('run', function (task) {
-  console.log('task', task)
+app.on('before:run', function (task) {
+  //console.log('task', task)
 })
 
 app.start(3000).then(function () {

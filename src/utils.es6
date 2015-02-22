@@ -1,22 +1,10 @@
 'use strict';
 
-var fs = require('fs'),
-    Path = require('path'),
-    Promise = require('bluebird'),
-    //deprecate = require('depd')('jaffamvc-koa'),
-    co = require('co');
+import fs from 'mz/fs';
+import Path from 'path';
+import Promise from 'native-or-bluebird';
+import co from 'co';
 
-var eachAsync = exports.eachAsync = function (array, iterator) {
-  return new Promise(function (resolve,reject) {
-    var i = 0, len = array.length, next;
-    next = function(e) {
-      if (e != null || i === len)
-        return e ? reject(e) : resolve();
-      iterator(array[i++], next);
-    };
-    next(null);
-  });
-};
 
 ['Array', 'String'].forEach(function (e) {
   exports['is'+e] = function (arg) {
@@ -24,27 +12,14 @@ var eachAsync = exports.eachAsync = function (array, iterator) {
   };
 });
 
-
-var camelize = exports.camelize = function (str) {
+export function camelize (str) {
   return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
-};
+}
 
-var __slice = exports.slice = Array.prototype.slice;
 
-// Deprecate: use object-assign instead.
-/*var extend = exports.extend = deprecate.function(function extend () {
-  var o, a, b, p, i;
-  a = arguments[0], b = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-  for (i = 0; i < b.length; i++) {
-    if ((o = b[i]) == null) continue;
-    for (p in o) a[p] = o[p];
-  }
-  return a;
-});*/
+export let exts = ['.js','.coffee'];
 
-exports.exts = ['.js','.coffee'];
-
-exports.resolveFile = function (dir, name, suffix, exts) {
+export function resolveFile (dir, name, suffix, exts) {
   dir = Path.resolve(dir);
   var f, i, p;
   suffix = suffix || '-controller';
@@ -54,13 +29,13 @@ exports.resolveFile = function (dir, name, suffix, exts) {
 
   for (i = 0; i < p.length; i++) {
     f = Path.join(dir,p[i]);
-    f = exports.resolveExt(f,exts);
+    f = resolveExt(f,exts);
     if (f) return f;
   }
 
-};
+}
 
-exports.resolveExt = function(fileName, exts) {
+export function resolveExt( fileName, exts) {
   var f, i;
   if (exts == null) exts = exports.exts;
 
@@ -71,10 +46,10 @@ exports.resolveExt = function(fileName, exts) {
     }
   }
   return null;
-};
+}
 
 
-var fileExists = exports.fileExists = function (file, cb) {
+export function fileExists (file) {
   return new Promise(function (resolve, reject) {
       fs.stat(file, function (err) {
         if (err) {
@@ -88,48 +63,49 @@ var fileExists = exports.fileExists = function (file, cb) {
 
       });
   });
-};
+}
 
-var fileExistsSync = exports.fileExistsSync = function (file) {
+export function fileExistsSync (file) {
   try {
-    var stat = fs.statSync(file);
+    let stat = fs.statSync(file);
     return stat != null;
   } catch (e) {
     return false;
   }
-};
+}
 
-// TODO: Handle sub directories.
-var requireDir = exports.requireDir = function (path, cb, exts, recursive) {
+export function requireDir (path, cb, exts, recursive) {
+
   recursive = recursive || false;
-
-  var readdir = Promise.promisify(fs.readdir);
-  var stat = Promise.promisify(fs.stat);
 
   exts = exts || exports.exts;
 
   return co(function *() {
-    var stats, fp,file,mod, files = yield readdir(path);
+
+    var stats, fp, file, mod;
+    let files = yield fs.readdir(path);
+
     files.sort();
 
     for (var i=0;i<files.length;i++) {
       file = files[i];
-      fp = Path.join(path, file), mod;
+
       if (file[0] === '.') continue;
 
-      stats = yield stat(fp);
+      fp = Path.join(path, file);
+
+      stats = yield fs.stat(fp);
 
       if (stats.isDirectory()) {
         if (!recursive) continue;
 
-        yield requireDir(fp,cb,exts,true);
+        yield exports.requireDir(fp,cb,exts,true);
 
       } else if (stats.isFile()) {
         if (exts.indexOf(Path.extname(file)) === -1)
           continue;
 
-
-        mod = requireFile(fp);
+        mod = loadFile(fp);
 
         yield cb(mod, fp);
       }
@@ -140,9 +116,9 @@ var requireDir = exports.requireDir = function (path, cb, exts, recursive) {
 
   });
 
-};
+}
 
-function requireFile (file) {
+function loadFile (file) {
   var ext = Path.extname(file);
 
   if (ext === '.json') {
@@ -152,37 +128,39 @@ function requireFile (file) {
     return require(file);
 
   } else if (ext === '.coffee') {
-    var coffee = require('coffee-script');
+    let coffee = require('coffee-script');
     if (typeof coffee.register === 'function')
       coffee.register();
     return require(file);
 
   } else if (ext === '.cson') {
-    var cson = require('cson');
+    let cson = require('cson');
     return cson.requireFile(file);
 
   } else if (ext === '.yaml') {
-    var yaml = require('js-yaml');
+    let yaml = require('js-yaml');
     return yaml.safeLoad(fs.readFileSync(file,'utf-8'));
 
   } else if (ext == '.toml') {
-    var toml = require('toml');
-    return toml.parse(fs.readFileSync(file, 'utf-8'))
+    let toml = require('toml');
+    return toml.parse(fs.readFileSync(file, 'utf-8'));
+
   } else if (ext == '.ls') {
     require('LiveScript');
     return require(file);
   }
 
-  throw new Error('No parser found')
+  throw new Error('No parser found');
 }
 
 
 /**
  * Check if `obj` is yieldable (via co)
  */
-exports.isYieldable = function isYieldable(obj) {
+export function isYieldable (obj) {
   return isPromise(obj) || isGenerator(obj) || isGeneratorFunction(obj);
-};
+}
+
 /**
  * Check if `obj` is a promise.
  *
@@ -190,8 +168,7 @@ exports.isYieldable = function isYieldable(obj) {
  * @return {Boolean}
  * @api private
  */
-
-function isPromise(obj) {
+export function isPromise(obj) {
   return 'function' == typeof obj.then;
 }
 
@@ -202,8 +179,7 @@ function isPromise(obj) {
  * @return {Boolean}
  * @api private
  */
-
-function isGenerator(obj) {
+export function isGenerator(obj) {
   return 'function' == typeof obj.next && 'function' == typeof obj.throw;
 }
 
@@ -214,9 +190,15 @@ function isGenerator(obj) {
  * @return {Boolean}
  * @api private
  */
-function isGeneratorFunction(obj) {
+export function isGeneratorFunction(obj) {
   var constructor = obj.constructor;
   if (!constructor) return false;
   if ('GeneratorFunction' === constructor.name || 'GeneratorFunction' === constructor.displayName) return true;
   return isGenerator(constructor.prototype);
+}
+
+export function delay(t) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, t);
+  });
 }

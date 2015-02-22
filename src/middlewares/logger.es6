@@ -1,8 +1,7 @@
 
 'use strict';
-import {format} from 'util';
 
-//var format = require('util').format;
+import {format} from 'util';
 
 module.exports = function () {
 
