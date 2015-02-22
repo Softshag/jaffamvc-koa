@@ -4,7 +4,7 @@
 import bootable from './bootable';
 import Router from './router';
 import Mediator from './mediator';
-import utils from './utils';
+import * as utils from './utils';
 import context from './context';
 
 import Koa from 'koa';
