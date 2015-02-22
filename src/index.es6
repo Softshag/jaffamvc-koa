@@ -10,8 +10,8 @@ import context from './context';
 import Koa from 'koa';
 import compose from 'koa-compose';
 import assign from 'object-assign';
-import fs from 'fs';
-
+import fs from 'mz/fs';
+import co from 'co';
 
 export default class JaffaMVC extends Koa {
 
@@ -73,22 +73,30 @@ export default class JaffaMVC extends Koa {
    * @param  {Function} fn        Optional
    * @return {Promise|null}
    */
-  start () {
+  start (port) {
     if (this.__initialized)
-      return;
+      return Promise.resolve(this);
 
-    defaultBoot.call(this);
 
-    this.emit('before:start');
+    return co( function *() {
+      yield defaultBoot.call(this);
 
-    return this.boot().bind(this).then(function () {
+      this.emit('before:start');
+
+      yield this.boot();
 
       this.__initialized = true;
       this.use(this.router.middleware());
       this.emit('start');
-      return this;
 
-    });
+      if (port) {
+        this.listen(port);
+      }
+
+
+      return this;
+    }.bind(this));
+
   }
 
   listen (port, force=false) {
@@ -108,7 +116,7 @@ JaffaMVC.defaults = {
   initializers: './initializers'
 };
 
-JaffaMVC.Promise = require('bluebird');
+JaffaMVC.Promise = require('native-or-bluebird');
 JaffaMVC.Router = Router;
 JaffaMVC.Mediator = Mediator;
 JaffaMVC.utils = utils;
@@ -118,22 +126,21 @@ assign(JaffaMVC.prototype, bootable);
 
 
 // Default boot phases.
-function defaultBoot () {
+function *defaultBoot () {
   /*jshint validthis:true */
 
   let initializer = require('./booters/initializers');
 
-  if (fs.existsSync(this.settings.initializers)) {
+  if (yield fs.exists(this.settings.initializers)) {
     this.phase('initializers', initializer(this.settings.initializers));
   } else {
     this.logger.warn('initializers path "%s" does not exists',this.settings.initializers);
   }
 
-  if (fs.existsSync(this.settings.routes)) {
+  if (yield fs.exists(this.settings.routes)) {
     this.phase('routes', initializer(this.settings.routes, this.router));
   } else {
     this.logger.warn('routes path "%s" does not exists',this.settings.routes);
   }
 
-  return this;
 }

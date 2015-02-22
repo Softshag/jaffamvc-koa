@@ -4,14 +4,14 @@ import dbg from 'debug';
 import methods from 'methods';
 import Route from './route';
 import compose from 'koa-compose';
-import mount from 'koa-mount';
-import utils from '../utils';
-import util from 'util';
+//import mount from 'koa-mount';
+//import utils from '../utils';
+//import util from 'util';
 import {EventEmitter} from 'events';
 
 let debug = dbg('koa-router');
 
-function *noop() {};
+function *noop() {}
 
 export default class Router extends EventEmitter {
 
@@ -116,7 +116,7 @@ export default class Router extends EventEmitter {
    * @param {String} name Optional.
    * @param {String|RegExp} path Path string or regular expression.
    * @param {Array} methods Array of HTTP verbs.
-   * @param {Function} middleware Multiple middleware also accepted.
+   * @param {Function|Array<Function>} middleware Multiple middleware also accepted.
    * @return {Route}
    * @api public
    */
@@ -255,7 +255,7 @@ export default class Router extends EventEmitter {
    * @api private
    */
   static extendApp (app, options) {
-    
+
     let router = new this(app,options);
 
     app.url = router.url.bind(router);

@@ -21,9 +21,8 @@ app.on('run', function (task) {
   console.log('task', task)
 })
 
-app.start().then(function () {
+app.start(3000).then(function () {
   console.log('Application listening on port 3000')
-  this.listen(3000);
 }).catch(function (err) {
   console.log(err.stack);
 });

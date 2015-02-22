@@ -38,7 +38,7 @@ module.exports = function *() {
   });
 
   this.namespace('/ns', function () {
-    console.log(this)
+    
     this.get('/den', function *() {
       this.body = "Rap rap"
     })

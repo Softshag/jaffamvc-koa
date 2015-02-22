@@ -1,7 +1,7 @@
 'use strict';
 
 import eos from 'end-of-stream';
-import util from 'util';
+//import util from 'util';
 import Promise from 'bluebird';
 import dbg from 'debug';
 import Utils from './utils';

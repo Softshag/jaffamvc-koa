@@ -1,9 +1,10 @@
 
 'use strict';
+import {format} from 'util';
 
-var format = require('util').format;
+//var format = require('util').format;
 
-module.exports = function (options) {
+module.exports = function () {
 
   return function *(next) {
     let ss = new Date();

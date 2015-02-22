@@ -3,7 +3,7 @@
 var fs = require('fs'),
     Path = require('path'),
     Promise = require('bluebird'),
-    deprecate = require('depd')('jaffamvc-koa'),
+    //deprecate = require('depd')('jaffamvc-koa'),
     co = require('co');
 
 var eachAsync = exports.eachAsync = function (array, iterator) {
@@ -32,7 +32,7 @@ var camelize = exports.camelize = function (str) {
 var __slice = exports.slice = Array.prototype.slice;
 
 // Deprecate: use object-assign instead.
-var extend = exports.extend = deprecate.function(function extend () {
+/*var extend = exports.extend = deprecate.function(function extend () {
   var o, a, b, p, i;
   a = arguments[0], b = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
   for (i = 0; i < b.length; i++) {
@@ -40,7 +40,7 @@ var extend = exports.extend = deprecate.function(function extend () {
     for (p in o) a[p] = o[p];
   }
   return a;
-});
+});*/
 
 exports.exts = ['.js','.coffee'];
 
