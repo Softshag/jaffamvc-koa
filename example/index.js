@@ -1,7 +1,6 @@
 
 var profiler = require('../lib/middlewares/profiler');
 var logger = require('../lib/middlewares/logger.js');
-var rpc = require('../modules/rpc');
 var jaffamvc, app;
 
 Jaffamvc = require('../index');

@@ -29,11 +29,11 @@ export default class JaffaMVC extends Koa {
 
     this.settings = assign({},JaffaMVC.defaults, options);
 
-    this.router = new Router(this,{
-      controllerPath: this.settings.controllers
+    Router.extendApp(this,{
+      controllerPath: this.settings.controllers,
+      rootPath: options.rootPath || '/'
     });
 
-    this.router.extendApp(this);
 
     this.logger = options.logger || require('./logger');
     this.channel = new Mediator();
@@ -57,12 +57,13 @@ export default class JaffaMVC extends Koa {
    * @return {JaffaMVC}            This for chaining.
    */
   use (...middleware) {
-    if (middleware.length > 1) {
+
+    if (middleware.length == 1) {
       [middleware] = middleware;
     } else {
-      var args = Array.prototype.slice.call(arguments, 0);
-      middleware = compose(args);
+      middleware = compose(middleware);
     }
+
     super.use(middleware);
     //Koa.prototype.use.call(this, middleware);
     return this;
