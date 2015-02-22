@@ -7,6 +7,7 @@ module.exports = {
   },
   index: function *() {
     this.body = "Tralla";
+    console.log(this.xhr)
     this.logger.info('Doing the old %s', "tralalal");
   }
 }
