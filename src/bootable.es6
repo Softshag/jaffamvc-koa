@@ -67,6 +67,9 @@ export default {
 
       for (var i=0;i<len;i++) {
         task = phases[i];
+
+        debug('running phase %s', task.options.name || 'unnamed');
+
         emit('before:run',task);
         yield task.run();
         emit('run', task);
