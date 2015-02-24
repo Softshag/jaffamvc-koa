@@ -78,7 +78,7 @@ export default class Router extends EventEmitter {
           }
 
         } else if (route instanceof Router) {
-          if (route.match(pn)) {
+          if (route._match(pn)) {
             prev = route.middleware().call(this, prev);
           }
         } else {
@@ -289,7 +289,7 @@ export default class Router extends EventEmitter {
     return this;
   }
 
-  match (path) {
+  _match (path) {
     return this._regexp.test(path);
   }
 
