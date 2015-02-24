@@ -3,6 +3,7 @@
 
 import bootable from './bootable';
 import Router from './router';
+import RouterExt from './router-ext'
 import Mediator from './mediator';
 import * as utils from './utils';
 import context from './context';
@@ -12,6 +13,8 @@ import compose from 'koa-compose';
 import assign from 'object-assign';
 import fs from 'mz/fs';
 import co from 'co';
+
+assign(Router.prototype, RouterExt)
 
 export default class JaffaMVC extends Koa {
 

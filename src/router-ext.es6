@@ -1,7 +1,7 @@
 
 'use strict';
 
-import KoaRouter from './router/router';
+//import KoaRouter from './router/router';
 import dbg from 'debug';
 import compose from 'koa-compose';
 import assign from 'object-assign';
@@ -26,7 +26,7 @@ function _filter (array, props) {
 }
 
 
-export default class Router extends KoaRouter {
+export default {
 
   /**
    * Match a route to a controller action
@@ -100,35 +100,8 @@ export default class Router extends KoaRouter {
     return this.register(path, [method], dispatch.call(this, controller, action,
       middlewares, options));
 
-  }
+  },
 
-  /**
-   * Add a namespace
-   */
-  /*namespace(path, ...middleware) {
-    let fn = middleware.pop();
-
-    let options = assign({},this.opts);
-    options.rootPath = Path.join(this.rootPath, path);
-
-    let ns = new Router(this.app, this.opts);
-
-    middleware.push(ns.middleware());
-
-    if (middleware.length > 1) {
-      middleware = compose(middleware);
-    } else {
-      [middleware] = middleware;
-    }
-
-    this.use(mount(path, middleware));
-
-    this.emit('register:namespace', this, ns);
-
-    fn.call(ns, ns);
-
-    return ns;
-  }*/
 
   resources(name, middlewares, options) {
     let _i, actions, controller, param;
