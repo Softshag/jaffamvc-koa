@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --harmony -r should --compilers coffee:coffee-script/register"
+    "test": "./node_modules/.bin/mocha --harmony -r should --compilers coffee:coffee-script/register",
+    "build": "gulp build"
   },
   "author": "Rasmus Kildevæld",
   "license": "ISC",
@@ -30,9 +31,13 @@
     "coffee-script": "^1.9.1",
     "gulp": "^3.8.11",
     "gulp-babel": "^4.0.0",
+    "gulp-mocha": "^2.0.0",
     "gulp-rename": "^1.2.0",
+    "jshint": "^2.6.0",
     "mocha": "^2.1.0",
     "noty": "^2.3.4",
+    "precommit-hook": "^1.0.7",
     "should": "~5.0.0"
-  }
+  },
+  "pre-commit": ["build","lint", "test"]
 }

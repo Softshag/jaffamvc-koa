@@ -1,6 +1,7 @@
 
 utils = require('../lib/utils')
 path = require 'path'
+require 'should'
 
 describe 'Utils', ->
 

@@ -4,31 +4,46 @@ import dbg from 'debug';
 import methods from 'methods';
 import Route from './route';
 import compose from 'koa-compose';
-//import mount from 'koa-mount';
-//import utils from '../utils';
-//import util from 'util';
+import assign from 'object-assign';
 import {EventEmitter} from 'events';
+
 
 let debug = dbg('koa-router');
 
 function *noop() {}
 
 export default class Router extends EventEmitter {
+  /**
+   * Router
+   * @param {Router} [parent]
+   * @param {Object} options
+   * @param {String} [options.rootPath]
+   * @extends EventEmitter
+   */
+  constructor (parent, options={}) {
+    if (arguments.length === 2) {
+      this.parent = parent;
+    } else {
+      options = parent;
+    }
 
-  constructor (app, options={}) {
-    this.app = app;
     super();
+
     // Namespaces
     this._ns = [];
 
     this.opts = options;
     this.methods = ["OPTIONS"];
+
     this.routes = [];
     this.params = {};
+
+    this.rootPath = options.rootPath || '/';
   }
 
   middleware () {
     const router = this;
+
 
     return function* (next) {
       let routes = router.routes,
@@ -38,15 +53,19 @@ export default class Router extends EventEmitter {
         this.params = [];
       }
 
-      let prev = next || noop;
-      let route;
+      let prev = next || noop, route, params;
+
+      let pathname = router.opts.routerPath || this.routerPath || this.path;
+
+      let pn = router.qualifiedPath === '/' ? pathname :
+        pathname.replace(router.qualifiedPath, '');
 
       while (i--) {
         route = routes[i];
 
         if (route instanceof Route) {
-          let pathname = router.opts.routerPath || this.routerPath || this.path;
-          let params = route.match(pathname);
+
+          params = route.match(pn);
 
           if (params && ~route.methods.indexOf(this.method)) {
 
@@ -58,6 +77,10 @@ export default class Router extends EventEmitter {
             prev = route.middleware.call(this, prev);
           }
 
+        } else if (route instanceof Router) {
+          if (route.match(pn)) {
+            prev = route.middleware().call(this, prev);
+          }
         } else {
           prev = route.call(this, prev);
         }
@@ -79,7 +102,6 @@ export default class Router extends EventEmitter {
   all (name, path, middleware) {
     var args = Array.prototype.slice.call(arguments);
     args.splice(typeof path == 'function' ? 1 : 2, 0, methods);
-
     this.register.apply(this, args);
     return this;
   }
@@ -203,8 +225,28 @@ export default class Router extends EventEmitter {
       [middleware] = middleware;
     }
     this.routes.push(middleware);
+
+    return this;
   }
 
+  namespace (path, fn) {
+    let ns;
+
+
+    if (this._ns[path]) {
+      ns = this._ns[path];
+    } else {
+      let o = assign({}, this.opts,{rootPath: path});
+      ns = new Router(this, o);
+      this.use(ns);
+    }
+
+    if (typeof fn === 'function') {
+      fn.call(ns);
+    }
+
+    return ns;
+  }
   /**
    * Lookup route with given `name`.
    *
@@ -247,6 +289,31 @@ export default class Router extends EventEmitter {
     return this;
   }
 
+  match (path) {
+    return this._regexp.test(path);
+  }
+
+  get rootPath () { return this._rootPath; }
+  set rootPath (path) {
+
+    if (path == null) {
+      throw new Error('Cannot set path of null');
+    }
+
+    if (path.substr(0,1) !== '/') {
+      path = '/' + path;
+    }
+
+    this._rootPath = path;
+    this._regexp = new RegExp('^\\' + this.qualifiedPath + ".*");
+  }
+  get qualifiedPath () {
+    if (this.parent) {
+      return require('path').join(this.parent.qualifiedPath, this.rootPath);
+    }
+    return this.rootPath;
+  }
+
   /**
    * Extend given `app` with router methods.
    *
@@ -256,7 +323,8 @@ export default class Router extends EventEmitter {
    */
   static extendApp (app, options) {
 
-    let router = new this(app,options);
+    let router = new this(options);
+    router.app = app;
 
     app.url = router.url.bind(router);
     app.router = router;
@@ -269,6 +337,10 @@ export default class Router extends EventEmitter {
           return this;
         };
       });
+
+    Object.defineProperty(app, 'qualifiedPath',{
+      get: function () { return this.router.qualifiedPath; }
+    });
 
     return app;
   }

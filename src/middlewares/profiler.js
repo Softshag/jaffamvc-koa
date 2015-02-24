@@ -1,4 +1,4 @@
-
+'use strict';
 var compare, formatBytes, row;
 
 compare = function(ctx, start, end) {
@@ -51,14 +51,14 @@ formatBytes = function(bytes) {
   return (bytes / gb).toFixed(2) + "gb";
 };
 
-module.exports = function(memwatch) {
+module.exports = function() {
 
   return function *(next) {
-    var end, snapshot, start;
+    let snapshot, start;
     snapshot = function() {
       return {
         mem: process.memoryUsage(),
-        time: new Date
+        time: new Date()
       };
     };
     start = snapshot();

@@ -5,11 +5,11 @@ import KoaRouter from './router/router';
 import dbg from 'debug';
 import compose from 'koa-compose';
 import assign from 'object-assign';
-import mount from 'koa-mount';
-import methods from 'methods';
+//import mount from 'koa-mount';
+//import methods from 'methods';
 import DispatchError from './errors/dispatch-error';
 import * as utils from './utils';
-import Path from 'path';
+//import Path from 'path';
 
 
 let debug = dbg('mvc:router');
@@ -28,16 +28,6 @@ function _filter (array, props) {
 
 export default class Router extends KoaRouter {
 
-  constructor(app, options={}) {
-
-    if (!options.rootPath) {
-      throw new Error('You should defined root url for router');
-    }
-
-    this.rootPath = options.rootPath;
-
-    super(app, options);
-  }
   /**
    * Match a route to a controller action
    * @param {String} path
@@ -115,7 +105,7 @@ export default class Router extends KoaRouter {
   /**
    * Add a namespace
    */
-  namespace(path, ...middleware) {
+  /*namespace(path, ...middleware) {
     let fn = middleware.pop();
 
     let options = assign({},this.opts);
@@ -138,7 +128,7 @@ export default class Router extends KoaRouter {
     fn.call(ns, ns);
 
     return ns;
-  }
+  }*/
 
   resources(name, middlewares, options) {
     let _i, actions, controller, param;

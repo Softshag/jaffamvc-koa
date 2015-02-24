@@ -1,6 +1,7 @@
 
 Route = require '../lib/router/route'
 toRegexp = require 'path-to-regexp'
+require 'should'
 
 describe 'route', ->
 
@@ -46,4 +47,7 @@ describe 'route', ->
     (match?).should.be.true
     match.should.be.an.Array
     match.should.have.property 'param', 'some'
-    
+
+  it 'should match multiple method', ->
+
+    route = new Route '/', ['get','post'], [->]

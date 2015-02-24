@@ -56,7 +56,7 @@ module.exports = (function (__super) {
         var c = this._cmds[cmd];
         c.fn.apply(c.ctx, __slice.call(arguments,1));
       } else {
-        throw new Error('Handler not set for command: ' + cmd)
+        throw new Error('Handler not set for command: ' + cmd);
       }
     },
     /**
@@ -98,14 +98,14 @@ module.exports = (function (__super) {
      * Request
      * @param  {String} req The name of the request
      */
-    request: function (req) {
+    request: function (req, ...args) {
       this._reqs = this._reqs || {};
 
       if (this._reqs.hasOwnProperty(req)) {
         var r = this._reqs[req];
-        return r.fn.apply(r.ctx, __slice.call(arguments, 1));
+        return _execute(r, args); // r.fn.apply(r.ctx, __slice.call(arguments, 1));
       } else {
-          throw new Error('Handler not set for request: ' + req)
+          throw new Error('Handler not set for request: ' + req);
       }
     },
     /**

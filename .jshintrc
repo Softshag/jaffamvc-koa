@@ -8,5 +8,7 @@
   "indent": 2,
   "undef": true,
   "unused": true,
-  "node": true
+  "node": true,
+  "noyield": true,
+  "shadow":true
 }
