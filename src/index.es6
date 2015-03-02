@@ -16,8 +16,18 @@ import co from 'co';
 
 assign(Router.prototype, RouterExt)
 
+/**
+ * JaffaMVC class
+ * @class  JaffaMVC
+ */
 export default class JaffaMVC extends Koa {
 
+  /**
+   * constructor
+   * @constructs JaffaMVC
+   * @param  {Object}
+   * @return {[type]}
+   */
   constructor(options={}) {
     if (!(this instanceof JaffaMVC)) {
       return new JaffaMVC(options);
@@ -32,6 +42,7 @@ export default class JaffaMVC extends Koa {
 
     this.settings = assign({},JaffaMVC.defaults, options);
 
+    // Extend the app with the router methods...
     Router.extendApp(this,{
       controllerPath: this.settings.controllers,
       rootPath: options.rootPath || '/'
@@ -141,7 +152,7 @@ function *defaultBoot () {
   }
 
   if (yield fs.exists(this.settings.routes)) {
-    this.phase('routes', initializer(this.settings.routes, this.router));
+    this.phase('routes', initializer(this.settings.routes, this));
   } else {
     this.logger.warn('routes path "%s" does not exists',this.settings.routes);
   }

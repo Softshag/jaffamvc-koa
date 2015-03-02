@@ -39,9 +39,7 @@ describe 'route', ->
 
     route.path.should.equal '/:param'
     route.regexp.toString().should.equal toRegexp('/:param', params ).toString()
-    #route.params.length.should.equal 1
-    #route.params[0].name.should.equal params[0].name
-
+    
     match = route.match '/some'
 
     (match?).should.be.true

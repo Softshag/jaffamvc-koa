@@ -5,7 +5,8 @@ import dbg from 'debug';
 import co from 'co';
 import * as utils from './utils';
 import Promise from 'native-or-bluebird';
-
+import {EventEmitter} from 'events';
+import assign from 'object-assign'
 let debug = dbg('mvc:boot');
 
 let noop = function *() {};
@@ -17,6 +18,7 @@ export class Task {
   }
 
   run() {
+
     return new Promise((resolve, reject) => {
 
       const done = function (err) {
@@ -38,18 +40,19 @@ export class Task {
 
       if (ret && ret instanceof Error) {
         reject(ret);
+      // Streams 
       } else if (ret && typeof ret.pipe === 'function') {
         eos(ret, done);
       } else if (ret && typeof ret.then === 'function') {
         ret.then(resolve,reject);
       } else {
-        resolve();
+        resolve(ret);
       }
      });
   }
 }
 
-export default {
+let bootable = {
   /**
    * Run phases
    * @return {Promise}
@@ -68,7 +71,7 @@ export default {
       for (var i=0;i<len;i++) {
         task = phases[i];
 
-        debug('running phase %s', task.options.name || 'unnamed');
+        debug('running phase %s', task.options.name);
 
         emit('before:run',task);
         yield task.run();
@@ -76,6 +79,7 @@ export default {
       }
 
       emit('boot');
+
     }.bind(this));
 
   },
@@ -91,14 +95,14 @@ export default {
 
     if (!fn) {
       fn = name;
-      name = null;
+      name = fn.name || 'unnamed';
     }
 
     if (typeof fn !== 'function') {
       throw new Error('fn not a function');
     }
 
-    debug('adding phase: %s', name || 'unnamed');
+    debug('adding phase: %s', name);
 
     var t = new Task({
       name: name,
@@ -111,3 +115,8 @@ export default {
     return t;
   }
 };
+
+export default bootable
+export class Booter extends EventEmitter {}
+
+assign(Booter.prototype, bootable);

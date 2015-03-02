@@ -5,9 +5,6 @@ var EventEmitter = require('events').EventEmitter,
     util = require('util'),
     assign = require('object-assign');
 
-
-var __slice = Array.prototype.slice;
-
 module.exports = (function (__super) {
 
   util.inherits(Mediator, __super);
@@ -49,12 +46,11 @@ module.exports = (function (__super) {
      * Execute Commands
      * @param  {String} cmd The name of the Commands
      */
-    command: function (cmd) {
+    command: function (cmd, ...args) {
       this._cmds = this._cmds || {};
 
       if (this._cmds.hasOwnProperty(cmd)) {
-        var c = this._cmds[cmd];
-        c.fn.apply(c.ctx, __slice.call(arguments,1));
+        _execute(this._cmds[cmd], args);
       } else {
         throw new Error('Handler not set for command: ' + cmd);
       }
@@ -102,10 +98,9 @@ module.exports = (function (__super) {
       this._reqs = this._reqs || {};
 
       if (this._reqs.hasOwnProperty(req)) {
-        var r = this._reqs[req];
-        return _execute(r, args); // r.fn.apply(r.ctx, __slice.call(arguments, 1));
+        return _execute(this._reqs[req], args);
       } else {
-          throw new Error('Handler not set for request: ' + req);
+        throw new Error('Handler not set for request: ' + req);
       }
     },
     /**

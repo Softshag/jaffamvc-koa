@@ -329,7 +329,7 @@ export default class Router extends EventEmitter {
     app.url = router.url.bind(router);
     app.router = router;
 
-    ['all', 'redirect', 'register', 'del', 'param']
+    ['all', 'redirect', 'register', 'del', 'param', 'namespace']
     .concat(methods)
       .forEach(function(method) {
         app[method] = function() {

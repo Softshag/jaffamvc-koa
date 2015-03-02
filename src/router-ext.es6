@@ -1,15 +1,13 @@
 
 'use strict';
 
-//import KoaRouter from './router/router';
 import dbg from 'debug';
 import compose from 'koa-compose';
 import assign from 'object-assign';
-//import mount from 'koa-mount';
-//import methods from 'methods';
+
 import DispatchError from './errors/dispatch-error';
 import * as utils from './utils';
-//import Path from 'path';
+
 
 
 let debug = dbg('mvc:router');
@@ -45,9 +43,7 @@ export default {
    *
    */
   match () {
-    let controller, action;
-    let i = 0;
-    let path = arguments[0];
+    let controller, action, i = 0 ,path = arguments[0];
     let middlewares = 4 <= arguments.length ? _slice.call(arguments, 1, i = arguments.length - 2) :
       (i = 1, []);
     let controllerAction = arguments[i++];
