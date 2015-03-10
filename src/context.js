@@ -15,7 +15,6 @@ assign(context, {
     }).join(', '));
   },
   xhr: function () {
-    
     let xhr = this.get('X-Requested-With');
     return xhr === 'XMLHttpRequest';
   }

@@ -6,7 +6,8 @@ import co from 'co';
 import * as utils from './utils';
 import Promise from 'native-or-bluebird';
 import {EventEmitter} from 'events';
-import assign from 'object-assign'
+import assign from 'object-assign';
+
 let debug = dbg('mvc:boot');
 
 let noop = function *() {};
@@ -40,7 +41,7 @@ export class Task {
 
       if (ret && ret instanceof Error) {
         reject(ret);
-      // Streams 
+      // Streams
       } else if (ret && typeof ret.pipe === 'function') {
         eos(ret, done);
       } else if (ret && typeof ret.then === 'function') {
@@ -104,19 +105,19 @@ let bootable = {
 
     debug('adding phase: %s', name);
 
-    var t = new Task({
+    let task = new Task({
       name: name,
       fn: fn,
       context: context || this
     });
 
-    this._phases.push(t);
+    this._phases.push(task);
 
-    return t;
+    return task;
   }
 };
 
-export default bootable
+export default bootable;
 export class Booter extends EventEmitter {}
 
 assign(Booter.prototype, bootable);

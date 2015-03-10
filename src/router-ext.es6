@@ -158,7 +158,7 @@ export default {
       options: options
     });
   }
-}
+};
 
 
 function dispatch(name, action, middlewares, options) {

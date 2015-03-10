@@ -51,17 +51,17 @@ export function resolveExt( fileName, exts) {
 
 export function fileExists (file) {
   return new Promise(function (resolve, reject) {
-      fs.stat(file, function (err) {
-        if (err) {
-          if (err.code == 'ENOENT') {
-            return resolve(false);
-          }
-          return reject(err);
+    fs.stat(file, function (err) {
+      if (err) {
+        if (err.code == 'ENOENT') {
+          return resolve(false);
         }
+        return reject(err);
+      }
 
-        resolve(true);
+      resolve(true);
 
-      });
+    });
   });
 }
 
@@ -90,6 +90,7 @@ export function requireDir (path, cb, exts, recursive) {
     for (var i=0;i<files.length;i++) {
       file = files[i];
 
+      // Ignore hidden files
       if (file[0] === '.') continue;
 
       fp = Path.join(path, file);
