@@ -23,8 +23,10 @@ export default class Router extends EventEmitter {
   constructor (parent, options={}) {
     if (arguments.length === 2) {
       this.parent = parent;
-    } else {
-      options = parent;
+    } else if (parent instanceof Router) {
+      this.parent = parent;
+    } else  {
+      options = parent || {};
     }
 
     super();
@@ -42,8 +44,8 @@ export default class Router extends EventEmitter {
   }
 
   middleware () {
-    const router = this;
 
+    const router = this;
 
     return function* (next) {
       let routes = router.routes,
@@ -55,7 +57,7 @@ export default class Router extends EventEmitter {
 
       let prev = next || noop, route, params;
 
-      let pathname = router.opts.routerPath || this.routerPath || this.path;
+      let pathname = this.path;
 
       let pn = router.qualifiedPath === '/' ? pathname :
         pathname.replace(router.qualifiedPath, '');
@@ -323,7 +325,7 @@ export default class Router extends EventEmitter {
    * @return {Application}
    * @api private
    */
-  static extendApp (app, options) {
+  /*static extendApp (app, options) {
 
     let router = new this(options);
     router.app = app;
@@ -345,7 +347,7 @@ export default class Router extends EventEmitter {
     });
 
     return app;
-  }
+  }*/
 }
 
 /**

@@ -7,7 +7,7 @@ var gulp = require("gulp"),
     mocha = require('gulp-mocha'),
     bump = require('gulp-bump');
 
-gulp.task("default", function () {
+gulp.task('build', function () {
   return gulp.src(["src/**/*.js", "src/**/*.es6"])
     .pipe(babel({
       blacklist: ['regenerator','es6.constants','es6.blockScoping']
@@ -17,6 +17,8 @@ gulp.task("default", function () {
     }))
     .pipe(gulp.dest("lib"));
 });
+
+gulp.task("default", ['build','test']);
 
 
 gulp.task('test', function () {

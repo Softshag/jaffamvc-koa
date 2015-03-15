@@ -42,12 +42,10 @@ export default class JaffaMVC extends Koa {
 
     this.settings = assign({},JaffaMVC.defaults, options);
 
-    // Extend the app with the router methods...
-    Router.extendApp(this,{
-      controllerPath: this.settings.controllers,
+    this.router = new Router({
+      controllerPath: this.settings.contrllers,
       rootPath: options.rootPath || '/'
     });
-
 
     this.logger = options.logger || require('./logger');
     this.channel = new Mediator();
@@ -119,7 +117,7 @@ export default class JaffaMVC extends Koa {
     if (!this.__initialized && !force)
       throw new Error('application not initialized, you should called start!');
 
-    this.emit('listen');
+    this.emit('listen', port);
 
     return super.listen(port);
   }
