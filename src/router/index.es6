@@ -79,6 +79,7 @@ export default class Router extends EventEmitter {
 
         } else if (route instanceof Router) {
           if (route._match(pn)) {
+            debug('router: %s'. pathname);
             prev = route.middleware().call(this, prev);
           }
         } else {
@@ -90,6 +91,7 @@ export default class Router extends EventEmitter {
 
     };
   }
+
   /**
    * Register route with all methods.
    *

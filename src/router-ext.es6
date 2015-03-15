@@ -186,13 +186,14 @@ function dispatch(name, action, middlewares, options) {
     let controller = Object.create(this);
     assign(controller, Controller);
 
-    if (typeof controller.initialize === 'function')
-
+    if (typeof controller.initialize === 'function') {
+      debug('dispatch %s#initialize', name);
       if (utils.isYieldable(controller.initialize)) {
         yield *controller.initialize.call(this, options);
       } else {
         controller.initialize.call(this, options);
       }
+    }
 
     if (controller && typeof controller[action] === 'function') {
       debug('dispatch %s#%s ', name, action);
@@ -205,8 +206,10 @@ function dispatch(name, action, middlewares, options) {
 
   };
 
-  middlewares.push(middleware);
-
-  return compose(middlewares);
-
+  if (middlewares.length) {
+    middlewares.push(middleware);
+    return compose(middlewares);
+  } else {
+    return middleware;
+  }
 }

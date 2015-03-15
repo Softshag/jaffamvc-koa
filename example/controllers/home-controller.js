@@ -3,11 +3,10 @@
 
 module.exports = {
   initialize: function (options) {
-    console.log(options)
+    this.opt = options;
+    this.app.logger.info('this is run before');
   },
   index: function *() {
-    this.body = "Tralla";
-    console.log(this.xhr)
-    this.logger.info('Doing the old %s', "tralalal");
+    this.body = "This is home: Hello, " + this.opt.hello;
   }
-}
+};

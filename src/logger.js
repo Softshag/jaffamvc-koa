@@ -5,10 +5,10 @@ var fmt = require('util').format;
 
 // Mini-logger.
 var colors = {
-  warn: '\u001b[93m[warn]\u001b[0m',
-  error: '\u001b[91m[error]\u001b[0m',
-  info: '\u001b[96m[info]\u001b[0m',
-  debug: '\u001b[92m[debug]\u001b[0m'
+  warn: '\u001b[93m[warn]\u001b[0m ',
+  error: '\u001b[91m[error]\u001b[0m ',
+  info: '\u001b[96m[info]\u001b[0m ',
+  debug: '\u001b[92m[debug]\u001b[0m '
 };
 
 var Logger = module.exports = {

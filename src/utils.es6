@@ -6,12 +6,6 @@ import Promise from 'native-or-bluebird';
 import co from 'co';
 
 
-['Array', 'String'].forEach(function (e) {
-  exports['is'+e] = function (arg) {
-    return Object.prototype.toString.call(arg) === '[object ' + e + ']';
-  };
-});
-
 export function camelize (str) {
   return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
 }

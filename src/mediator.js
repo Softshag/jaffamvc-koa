@@ -119,12 +119,12 @@ module.exports = (function (__super) {
 
   function _execute (handler, args) {
     if (!handler) return null;
-    var len = args.length;
-    switch (len) {
+    switch (args.length) {
       case 0: return handler.fn.call(handler.ctx);
       case 1: return handler.fn.call(handler.ctx, args[0]);
       case 2: return handler.fn.call(handler.ctx, args[0], args[1]);
       case 3: return handler.fn.call(handler.ctx, args[0], args[1], args[2]);
+      case 4: return handler.fn.call(handler.ctx, args[0], args[1], args[2],args[3]);
       default: return handler.fn.apply(handler.ctx, args);
     }
   }
