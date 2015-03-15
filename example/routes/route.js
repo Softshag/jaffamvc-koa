@@ -7,7 +7,7 @@ module.exports = function *() {
     this.body = "Hello World!";
   });
 
-  this.router.match('/home','home#index', {
+  this.match('/home','home#index', {
     hello: 'World'
   });
 

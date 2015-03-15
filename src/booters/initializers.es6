@@ -7,7 +7,7 @@ import dbg from 'debug';
 
 let debug = dbg('mvc:boot');
 
-export default function (path, ctx) {
+export default function (path, ctx, options) {
 
   if (!utils.fileExistsSync(path))
     throw new Error('path ' + path + ' does not exists!');
@@ -18,7 +18,7 @@ export default function (path, ctx) {
     ctx = ctx || this;
     return utils.requireDir(path, function *(mod, file) {
       debug('evaluating %s',file);
-      return yield mod.call(ctx);
+      return yield mod.call(ctx, options);
     });
   };
 

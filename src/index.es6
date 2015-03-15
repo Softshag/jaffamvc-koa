@@ -43,7 +43,7 @@ export default class JaffaMVC extends Koa {
     this.settings = assign({},JaffaMVC.defaults, options);
 
     this.router = new Router({
-      controllerPath: this.settings.contrllers,
+      controllerPath: this.settings.controllers,
       rootPath: options.rootPath || '/'
     });
 
@@ -150,7 +150,7 @@ function *defaultBoot () {
   }
 
   if (yield fs.exists(this.settings.routes)) {
-    this.phase('routes', initializer(this.settings.routes, this));
+    this.phase('routes', initializer(this.settings.routes, this.router, this));
   } else {
     this.logger.warn('routes path "%s" does not exists',this.settings.routes);
   }

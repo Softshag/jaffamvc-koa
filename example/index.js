@@ -15,5 +15,5 @@ app.start(PORT).then(function () {
   app.logger.info('Application listening on port: %s', PORT);
 
 }).catch(function (err) {
-  app.logger.error(err.stack);
+  app.logger.error(err);
 });
