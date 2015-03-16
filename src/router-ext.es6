@@ -189,9 +189,9 @@ function dispatch(name, action, middlewares, options) {
     if (typeof controller.initialize === 'function') {
       debug('dispatch %s#initialize', name);
       if (utils.isYieldable(controller.initialize)) {
-        yield *controller.initialize.call(this, options);
+        yield *controller.initialize.call(controller, options);
       } else {
-        controller.initialize.call(this, options);
+        controller.initialize.call(controller, options);
       }
     }
 
