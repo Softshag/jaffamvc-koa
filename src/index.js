@@ -16,17 +16,13 @@ import co from 'co';
 
 assign(Router.prototype, RouterExt);
 
-/**
- * JaffaMVC class
- * @class  JaffaMVC
- */
+
 export default class JaffaMVC extends Koa {
 
   /**
    * constructor
-   * @constructs JaffaMVC
-   * @param  {Object}
-   * @return {[type]}
+   * @constructor JaffaMVC
+   * @param  {Object} options
    */
   constructor(options={}) {
     if (!(this instanceof JaffaMVC)) {
@@ -42,6 +38,10 @@ export default class JaffaMVC extends Koa {
 
     this.settings = assign({},JaffaMVC.defaults, options);
 
+    /**
+     * router
+     * @member {Router} router
+     */
     this.router = new Router({
       controllerPath: this.settings.controllers,
       rootPath: options.rootPath || '/'
@@ -52,6 +52,11 @@ export default class JaffaMVC extends Koa {
 
 
   }
+  /**
+   * Logger
+   * @property {Logger} logger
+   * @memberOf JaffaMVC#
+   */
   get logger() { return this._logger; }
   set logger(logger) {
     this._logger = logger;
@@ -63,10 +68,14 @@ export default class JaffaMVC extends Koa {
     this._channel = chan;
     this.context.channel = chan;
   }
+
+  get server() { return this._server; }
   /**
    * Use middlewares
-   * @param  {[*function]} middleware One or more middleware functions
-   * @return {JaffaMVC}            This for chaining.
+   * @param  {...Function} middleware One or more middleware functions
+   * @return {JaffaMVC}   This for chaining.
+   * @memberOf JaffaMVC#
+   * @method use
    */
   use (...middleware) {
 
@@ -82,8 +91,10 @@ export default class JaffaMVC extends Koa {
   }
   /**
    * Start app
-   * @param  {Function} fn        Optional
-   * @return {Promise|null}
+   * @method start
+   * @memberOf JaffaMVC#
+   * @param  {Number} [port] Port to listen on
+   * @return {Promise<JaffaMVC>}
    */
   start (port) {
     if (this.__initialized)
@@ -113,13 +124,43 @@ export default class JaffaMVC extends Koa {
 
   }
 
+  /**
+   * Listen to given port
+   * @method listen
+   * @memberOf JaffaMVC#
+   * @param  {Number}  port  Port to listen on
+   * @param  {Boolean} [Force] Force listen if app not started
+   * @return {Server}        A nodejs http server
+   */
   listen (port, force=false) {
     if (!this.__initialized && !force)
       throw new Error('application not initialized, you should called start!');
 
     this.emit('listen', port);
 
-    return super.listen(port);
+    this._server = super.listen(port);
+
+    return this._server;
+  }
+
+  /**
+   * Close and stop the application
+   * @method close
+   * @memberOf JaffaMVC#
+   * @return {Promise}
+   */
+  close () {
+    if (this._server) {
+      return new Promise(function (resolve, reject) {
+        this.emit('before:close');
+        this._server.close(function (err) {
+          if (err) return reject(err);
+          this.emit('close');
+          return resolve();
+        }.bind(this));
+      });
+    }
+    return Promise.reject(new Error('no server instance'));
   }
 
 }

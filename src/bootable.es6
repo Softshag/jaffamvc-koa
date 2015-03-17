@@ -107,7 +107,6 @@ let bootable = {
 
     let task = new Task({
       name: name,
-
       fn: fn,
       context: context || this
     });

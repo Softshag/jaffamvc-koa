@@ -148,6 +148,7 @@ export default {
         action: action,
         via: o.m
       });
+
       let args = [o.p].concat(middlewares);
       args.push(opt);
 
