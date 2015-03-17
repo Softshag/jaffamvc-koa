@@ -1,11 +1,11 @@
 {
   "name": "jaffamvc-koa",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --harmony -r should --compilers coffee:coffee-script/register",
-    "build": "node ./node_modules/.bin/gulp default"
+    "build": "./node_modules/.bin/gulp default"
   },
   "author": "Rasmus Kildevæld",
   "license": "ISC",
