@@ -69,7 +69,12 @@ export default class JaffaMVC extends Koa {
     this.context.channel = chan;
   }
 
-  get server() { return this._server; }
+  get server() {
+    if (this._server == null) {
+      this._server = require('http').createServer(this.callback());
+    }
+    return this._server;
+  }
   /**
    * Use middlewares
    * @param  {...Function} middleware One or more middleware functions
@@ -138,7 +143,11 @@ export default class JaffaMVC extends Koa {
 
     this.emit('listen', port);
 
-    this._server = super.listen(port);
+    if (this._server) {
+      this._server.listen(port);
+    } else {
+      this._server = super.listen(port);
+    }
 
     return this._server;
   }
