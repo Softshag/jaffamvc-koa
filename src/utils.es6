@@ -97,7 +97,7 @@ export function requireDir (path, cb, exts, recursive) {
         yield exports.requireDir(fp,cb,exts,true);
 
       } else if (stats.isFile()) {
-        if (exts.indexOf(Path.extname(file)) === -1)
+        if (!~exts.indexOf(Path.extname(file)))
           continue;
 
         mod = yield loadFile(fp);
