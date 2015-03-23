@@ -141,13 +141,15 @@ export default class JaffaMVC extends Koa {
     if (!this.__initialized && !force)
       throw new Error('application not initialized, you should called start!');
 
-    this.emit('listen', port);
+    this.emit('before:listen', port);
 
     if (this._server) {
       this._server.listen(port);
     } else {
       this._server = super.listen(port);
     }
+
+    this.emit('listen', port);
 
     return this._server;
   }

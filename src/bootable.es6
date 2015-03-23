@@ -61,7 +61,7 @@ let bootable = {
   boot () {
 
     const emit = this.emit.bind(this) || noop;
-    let phases = this._phases;
+    let phases = this._phases || [];
 
     emit('before:boot');
     let len = phases.length;

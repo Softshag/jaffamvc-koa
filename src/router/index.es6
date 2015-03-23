@@ -317,37 +317,6 @@ export default class Router extends EventEmitter {
     }
     return this.rootPath;
   }
-
-  /**
-   * Extend given `app` with router methods.
-   *
-   * @param {Application} app
-   * @return {Application}
-   * @api private
-   */
-  /*static extendApp (app, options) {
-
-    let router = new this(options);
-    router.app = app;
-
-    app.url = router.url.bind(router);
-    app.router = router;
-
-    ['all', 'redirect', 'register', 'del', 'param', 'namespace']
-    .concat(methods)
-      .forEach(function(method) {
-        app[method] = function() {
-          router[method].apply(router, arguments);
-          return this;
-        };
-      });
-
-    Object.defineProperty(app, 'qualifiedPath',{
-      get: function () { return this.router.qualifiedPath; }
-    });
-
-    return app;
-  }*/
 }
 
 /**

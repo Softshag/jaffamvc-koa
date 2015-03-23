@@ -100,7 +100,7 @@ export function requireDir (path, cb, exts, recursive) {
         if (exts.indexOf(Path.extname(file)) === -1)
           continue;
 
-        mod = loadFile(fp);
+        mod = yield loadFile(fp);
 
         yield cb(mod, fp);
       }
@@ -113,7 +113,7 @@ export function requireDir (path, cb, exts, recursive) {
 
 }
 
-function loadFile (file) {
+function *loadFile (file) {
   var ext = Path.extname(file);
 
   if (ext === '.json') {
@@ -134,11 +134,13 @@ function loadFile (file) {
 
   } else if (ext === '.yaml') {
     let yaml = require('js-yaml');
-    return yaml.safeLoad(fs.readFileSync(file,'utf-8'));
+    let data = yield fs.readFile(file,'utf8');
+    return yaml.safeLoad(data);
 
   } else if (ext == '.toml') {
     let toml = require('toml');
-    return toml.parse(fs.readFileSync(file, 'utf-8'));
+    let data = yield fs.readFile(file,'utf8');
+    return toml.parse(data);
 
   } else if (ext == '.ls') {
     require('LiveScript');
