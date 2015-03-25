@@ -313,7 +313,9 @@ export default class Router extends EventEmitter {
   }
   get qualifiedPath () {
     if (this.parent) {
-      return require('path').join(this.parent.qualifiedPath, this.rootPath);
+      let qp = this.parent.qualifiedPath;
+      if (qp === '/') qp = "";
+      return qp + this.rootPath;
     }
     return this.rootPath;
   }
