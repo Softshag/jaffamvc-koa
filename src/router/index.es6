@@ -6,6 +6,7 @@ import Route from './route';
 import compose from 'koa-compose';
 import assign from 'object-assign';
 import {EventEmitter} from 'events';
+import URL from 'url';
 
 
 let debug = dbg('koa-router');
@@ -313,9 +314,7 @@ export default class Router extends EventEmitter {
   }
   get qualifiedPath () {
     if (this.parent) {
-      let qp = this.parent.qualifiedPath;
-      if (qp === '/') qp = "";
-      return qp + this.rootPath;
+      return URL.resolve(this.parent.qualifiedPath, this.rootPath);
     }
     return this.rootPath;
   }

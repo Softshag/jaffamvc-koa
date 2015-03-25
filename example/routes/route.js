@@ -11,4 +11,10 @@ module.exports = function *() {
     hello: 'World'
   });
 
+  this.namespace('/api', function () {
+    this.get('/', function *() {
+      this.body = "RAPRAP";
+    });
+  });
+
 };
