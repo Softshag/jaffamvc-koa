@@ -2,11 +2,10 @@
 
 import fs from 'mz/fs';
 import Path from 'path';
-import co from './co';
 
 export var Promise = require('native-or-bluebird');
 
-export * from './co';
+export var co = require('./co');
 
 export function camelize (str) {
   return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
