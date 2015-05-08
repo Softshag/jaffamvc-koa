@@ -2,9 +2,9 @@
 
 import fs from 'mz/fs';
 import Path from 'path';
-import Promise from 'native-or-bluebird';
-import co from 'co';
+import co from './co';
 
+export var Promise = require('native-or-bluebird');
 
 export function camelize (str) {
   return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
@@ -199,4 +199,7 @@ export function delay(t) {
     setTimeout(resolve, t);
   });
 }
+
+
+
 

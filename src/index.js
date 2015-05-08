@@ -12,7 +12,8 @@ import Koa from 'koa';
 import compose from 'koa-compose';
 import assign from 'object-assign';
 import fs from 'mz/fs';
-import co from 'co';
+import co from './co';
+
 
 assign(Router.prototype, RouterExt);
 
@@ -103,7 +104,7 @@ export default class JaffaMVC extends Koa {
    */
   start (port) {
     if (this.__initialized)
-      return Promise.resolve(this);
+      return utils.Promise.resolve(this);
 
 
     return co( function *() {
@@ -162,7 +163,7 @@ export default class JaffaMVC extends Koa {
    */
   close () {
     if (this._server) {
-      return new Promise(function (resolve, reject) {
+      return new utils.Promise(function (resolve, reject) {
         this.emit('before:close');
         this._server.close(function (err) {
           if (err) return reject(err);
@@ -171,7 +172,7 @@ export default class JaffaMVC extends Koa {
         }.bind(this));
       });
     }
-    return Promise.reject(new Error('no server instance'));
+    return utils.Promise.reject(new Error('no server instance'));
   }
 
 }
