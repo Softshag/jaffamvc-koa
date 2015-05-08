@@ -5,7 +5,7 @@ import Path from 'path';
 import co from './co';
 
 export var Promise = require('native-or-bluebird');
-
+export var co = co;
 export function camelize (str) {
   return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
 }
