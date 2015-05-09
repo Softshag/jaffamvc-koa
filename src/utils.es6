@@ -201,6 +201,16 @@ export function delay(t) {
   });
 }
 
+export function deferred() {
+  let ret = {};
+
+  ret.promise = new Promise(function (resolve, reject) {
+    ret.resolve = resolve;
+    ret.reject = reject;
+  });
+  return ret;
+}
+
 
 
 
