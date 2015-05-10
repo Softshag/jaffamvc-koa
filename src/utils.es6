@@ -208,6 +208,12 @@ export function deferred() {
     ret.resolve = resolve;
     ret.reject = reject;
   });
+
+  ret.done = function (err, result) {
+    if (err) return ret.reject(err);
+    ret.resolve(result);
+  };
+
   return ret;
 }
 
