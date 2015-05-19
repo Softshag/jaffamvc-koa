@@ -1,11 +1,10 @@
-
 'use strict';
 
 import compose from 'koa-compose';
 import pathToRegexp from 'path-to-regexp';
 import dbg from 'debug';
 
-let debug = dbg('koa-router');
+let debug = dbg('mvc:router:route');
 
 
 export default class Route {

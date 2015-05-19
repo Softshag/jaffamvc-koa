@@ -9,7 +9,7 @@ import {EventEmitter} from 'events';
 import URL from 'url';
 
 
-let debug = dbg('koa-router');
+let debug = dbg('mvc:router:route');
 
 function *noop() {}
 

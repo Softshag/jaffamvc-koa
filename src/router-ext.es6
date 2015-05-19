@@ -183,9 +183,10 @@ function dispatch(name, action, middlewares, options) {
   }
 
   var middleware = function *(next) {
-
+    let ctx = this;
     let controller = Object.create(this);
     assign(controller, Controller);
+    controller.ctx = ctx;
 
     if (typeof controller.initialize === 'function') {
       debug('dispatch %s#initialize', name);
