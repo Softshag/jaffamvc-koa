@@ -45,10 +45,21 @@ module.export = function () {
     this.body = 'Hello, world!';
   });
   
-  this.get('/home', middleware, function *() {
+  this.get('/home', function *(next) {
+    console.log('someone\'s knocking!');
+    yield *next;
+    console.log('oh...');
+  }, function *() {
     this.body = 'Glad to see you home';
   }
+  // regexp
+  this.get(/number\/([0-9]+)/,....);
   
+  // parameters
+  this.get('/decimal/:decimal',function *(next) {
+    console.log(this.params.decimal);
+    yield *next;
+  });
   
   // Controller method matching
   this.match('/admin', middleware, 'admin#index');
@@ -57,7 +68,7 @@ module.export = function () {
   this.resources('api');
   
   // namespacing
-  let admin = this.namespace('/admin', authenticate(), function () {
+  let admin = this.namespace('/admin', authenticate(), function* () {
     this.match('/', 'admin#show');
     this.match('/update', 'admin#update', {via:'post'}); // POST /admin/update
   })
