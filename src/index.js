@@ -31,10 +31,8 @@ export default class JaffaMVC extends Koa {
     }
 
     super();
-    //this.__logger = null;
-    //this.__channel = null;
-    this.context = Object.create(context);
 
+    this.context = Object.create(context);
     this.settings = assign({},JaffaMVC.defaults, options);
 
     /**
@@ -139,7 +137,10 @@ export default class JaffaMVC extends Koa {
    */
   listen (port, force=false) {
     if (!this.__initialized && !force)
-      throw new Error('application not initialized, you should called start!');
+      throw new Error('application not initialized, you should call start!');
+
+    if (!this.__initialized)
+      this.logger.warn('listen: application not initialized');
 
     this.emit('before:listen', port);
 
@@ -171,7 +172,8 @@ export default class JaffaMVC extends Koa {
         }.bind(this));
       });
     }
-    return utils.Promise.reject(new Error('no server instance'));
+
+    return utils.Promise.resolve();
   }
 
 }
@@ -189,7 +191,6 @@ JaffaMVC.utils = utils;
 
 assign(JaffaMVC.prototype, bootable);
 
-
 // Default boot phases.
 function *defaultBoot () {
   /*jshint validthis:true */
@@ -198,13 +199,13 @@ function *defaultBoot () {
   if (yield fs.exists(this.settings.initializers)) {
     this.phase('initializers', initializer(this.settings.initializers));
   } else {
-    this.logger.warn('initializers path "%s" does not exists',this.settings.initializers);
+    this.logger.warn('initializers path "%s" does not exist',this.settings.initializers);
   }
 
   if (yield fs.exists(this.settings.routes)) {
     this.phase('routes', initializer(this.settings.routes, this.router, this));
   } else {
-    this.logger.warn('routes path "%s" does not exists',this.settings.routes);
+    this.logger.warn('routes path "%s" does not exist',this.settings.routes);
   }
 
 }
