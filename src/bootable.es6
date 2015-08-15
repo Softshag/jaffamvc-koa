@@ -59,11 +59,20 @@ let bootable = {
    * @return {Promise}
    */
   boot () {
+    return this.bootPhases('start');
+  },
 
+  unboot () {
+    return this.bootPhases('stop');
+  },
+
+
+  bootPhases (type) {
     const emit = this.emit.bind(this) || noop;
     let phases = this._phases || [];
 
     emit('before:boot');
+
     let len = phases.length;
 
     return co(function *() {
@@ -71,8 +80,12 @@ let bootable = {
 
       for (var i=0;i<len;i++) {
         task = phases[i];
+        
+        if (task.options.type !== type) {
+          continue;
+        }
 
-        debug('running phase %s', task.options.name);
+        debug('running %s:phase %s', type, task.options.name);
 
         emit('before:run',task);
         yield task.run();
@@ -82,16 +95,16 @@ let bootable = {
       emit('boot');
 
     }.bind(this));
-
   },
   /**
    * Add new phase the the runner
    * @param {String} [name]
    * @param {Function} fn
    * @param {Object} [context]
+   * @param {String} type start or stop
    * @return {Task}
    */
-  phase (name, fn, context) {
+  phase (name, fn, context, type='start') {
     this._phases = this._phases || [];
 
     if (!fn) {
@@ -108,13 +121,14 @@ let bootable = {
     let task = new Task({
       name: name,
       fn: fn,
-      context: context || this
+      context: context || this,
+      type: type
     });
 
     this._phases.push(task);
 
     return task;
-  }
+  },
 };
 
 export default bootable;

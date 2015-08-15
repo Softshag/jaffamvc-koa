@@ -31,10 +31,8 @@ export default class JaffaMVC extends Koa {
     }
 
     super();
-
-    this.__logger = null;
-    this.__channel = null;
-
+    //this.__logger = null;
+    //this.__channel = null;
     this.context = Object.create(context);
 
     this.settings = assign({},JaffaMVC.defaults, options);
@@ -49,6 +47,7 @@ export default class JaffaMVC extends Koa {
     });
 
     this.logger = options.logger || require('./logger');
+    this.logger.suppressWarnings = options.suppressWarnings;
     this.channel = new Mediator();
 
 
@@ -180,7 +179,8 @@ export default class JaffaMVC extends Koa {
 JaffaMVC.defaults = {
   controllers: './controllers',
   routes: './routes',
-  initializers: './initializers'
+  initializers: './initializers',
+  suppressWarnings: false
 };
 
 JaffaMVC.Router = Router;
@@ -193,7 +193,6 @@ assign(JaffaMVC.prototype, bootable);
 // Default boot phases.
 function *defaultBoot () {
   /*jshint validthis:true */
-
   let initializer = require('./booters/initializers');
 
   if (yield fs.exists(this.settings.initializers)) {

@@ -180,6 +180,7 @@ function dispatch(name, action, middlewares, options) {
     Controller = require(file);
   } else {
     Controller = name;
+    name = options.controllerName||options.name||'object';
   }
 
   var middleware = function *(next) {
